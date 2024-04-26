@@ -1,35 +1,25 @@
 #!/usr/bin/python3
-'''
-module that uses REST api to return info on user's TODO
-'''
-
+"""Gather data from an API"""
+import json
 import requests
 import sys
 
 
-def todofunc():
-    ''' function that gets todo tasks and prints the completed tasks '''
-    r = requests.get(
-            'https://jsonplaceholder.typicode.com/users/{}'.format(
-                sys.argv[1]))
-    new = r.json()
-    name = new.get('name')
-    r = requests.get(
-            'https://jsonplaceholder.typicode.com/users/{}/todos'.format(
-                sys.argv[1]))
-    new = r.json()
-    size = len(new)
-    titles = []
-    count = 0
-    for i in range(0, size):
-        if new[i].get('completed'):
-            count += 1
-            titles.append(new[i].get('title'))
-
-    print("Employee {} is done with tasks({}/{}):".format(name, count, size))
-    for i in range(0, count):
-        print("\t {}".format(titles[i]))
-
-
 if __name__ == "__main__":
-    todofunc()
+    if len(sys.argv) == 2:
+        res = requests.get('https://jsonplaceholder.typicode.com/users/' +
+                           f'{sys.argv[1]}/todos')
+    response = json.loads(res.text)
+    all_task = len(response)
+    done_task = 0
+    done_task_title = ""
+    for task in response:
+        if task["completed"] is True:
+            done_task_title += "\t " + task["title"] + "\n"
+            done_task = done_task + 1
+    user = requests.get('https://jsonplaceholder.typicode.com/users/' +
+                        f'{sys.argv[1]}')
+    user_response = json.loads(user.text)
+    user_name = user_response["name"]
+    print(f"Employee {user_name} is done with tasks({done_task}/{all_task}):")
+    print(done_task_title, end="")
