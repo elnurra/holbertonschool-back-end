@@ -18,12 +18,12 @@ def fetch_employee_todo_list(employee_id):
         user_data = user_response.json()
         todos_data = todos_response.json()
 
-        employee_name = user_data["name"]
+        EMPLOYEE_NAME = user_data["name"]
         total_tasks = len(todos_data)
         done_tasks = sum(1 for task in todos_data if task["completed"])
 
         print("Employee {} is done with tasks ({}/{}):".format(
-            employee_name, done_tasks, total_tasks))
+            EMPLOYEE_NAME, done_tasks, total_tasks))
         for task in todos_data:
             if task["completed"]:
                 print(f"\t{task['title']}")
